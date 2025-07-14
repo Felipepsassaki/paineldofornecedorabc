@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel do Fornecedor</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #003366;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    nav {
+      background-color: #e0e0e0;
+      padding: 1rem;
+      text-align: center;
+    }
+    nav a {
+      margin: 0 1rem;
+      text-decoration: none;
+      color: #003366;
+    }
+    main {
+      padding: 2rem;
+    }
+    .card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      max-width: 500px;
+      margin: 2rem auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input, button {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      background-color: #003366;
+      color: white;
+      cursor: pointer;
+    }
+    #mensagem-login {
+      margin-top: 1rem;
+      text-align: center;
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Painel do Fornecedor</h1>
+  </header>
+
+  <nav>
+    <a href="#login">Login</a>
+    <a href="#cadastro">Cadastro</a>
+    <a href="#admin">Admin</a>
+  </nav>
+
+  <main>
+    <section id="login" class="card">
+      <h2>Login</h2>
+      <input type="text" id="usuario" placeholder="Usuário">
+      <input type="password" id="senha" placeholder="Senha">
+      <button onclick="simularLogin()">Entrar</button>
+      <div id="mensagem-login"></div>
+    </section>
+
+    <section id="cadastro" class="card">
+      <h2>Cadastro</h2>
+      <input type="text" placeholder="Nome da empresa">
+      <input type="email" placeholder="E-mail">
+      <input type="password" placeholder="Senha">
+      <button>Cadastrar</button>
+    </section>
+
+    <section id="admin" class="card">
+      <h2>Área do Administrador</h2>
+      <p>Aqui será possível visualizar documentos enviados pelos fornecedores.</p>
+    </section>
+  </main>
+
+  <script>
+    function simularLogin() {
+      const usuario = document.getElementById('usuario').value;
+      const senha = document.getElementById('senha').value;
+      const mensagem = document.getElementById('mensagem-login');
+
+      if (usuario === 'fornecedor' && senha === '1234') {
+        mensagem.style.color = 'green';
+        mensagem.innerText = 'Login bem-sucedido!';
+      } else {
+        mensagem.style.color = 'red';
+        mensagem.innerText = 'Usuário ou senha incorretos';
+      }
+    }
+  </script>
+</body>
+</html>

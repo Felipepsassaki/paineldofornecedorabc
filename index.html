@@ -50,10 +50,9 @@
       color: white;
       cursor: pointer;
     }
-    #mensagem-login {
+    #mensagem-login, #mensagem-cadastro {
       margin-top: 1rem;
       text-align: center;
-      color: red;
     }
   </style>
 </head>
@@ -71,7 +70,7 @@
   <main>
     <section id="login" class="card">
       <h2>Login</h2>
-      <input type="text" id="usuario" placeholder="Usuário">
+      <input type="text" id="usuario" placeholder="Usuário (e-mail)">
       <input type="password" id="senha" placeholder="Senha">
       <button onclick="simularLogin()">Entrar</button>
       <div id="mensagem-login"></div>
@@ -79,10 +78,11 @@
 
     <section id="cadastro" class="card">
       <h2>Cadastro</h2>
-      <input type="text" placeholder="Nome da empresa">
-      <input type="email" placeholder="E-mail">
-      <input type="password" placeholder="Senha">
-      <button>Cadastrar</button>
+      <input type="text" id="empresa" placeholder="Nome da empresa">
+      <input type="email" id="email" placeholder="E-mail">
+      <input type="password" id="senhaCadastro" placeholder="Senha">
+      <button onclick="simularCadastro()">Cadastrar</button>
+      <div id="mensagem-cadastro"></div>
     </section>
 
     <section id="admin" class="card">
@@ -92,12 +92,55 @@
   </main>
 
   <script>
+    function obterUsuarios() {
+      return JSON.parse(localStorage.getItem('usuarios') || '[]');
+    }
+
+    function salvarUsuarios(usuarios) {
+      localStorage.setItem('usuarios', JSON.stringify(usuarios));
+    }
+
+    function simularCadastro() {
+      const empresa = document.getElementById('empresa').value;
+      const email = document.getElementById('email').value;
+      const senha = document.getElementById('senhaCadastro').value;
+      const mensagemCadastro = document.getElementById('mensagem-cadastro');
+
+      if (!empresa || !email || !senha) {
+        mensagemCadastro.style.color = 'red';
+        mensagemCadastro.innerText = 'Por favor, preencha todos os campos.';
+        return;
+      }
+
+      const usuarios = obterUsuarios();
+      const jaExiste = usuarios.find(u => u.email === email);
+
+      if (jaExiste) {
+        mensagemCadastro.style.color = 'red';
+        mensagemCadastro.innerText = 'Este e-mail já está cadastrado.';
+        return;
+      }
+
+      usuarios.push({ email, senha });
+      salvarUsuarios(usuarios);
+
+      mensagemCadastro.style.color = 'green';
+      mensagemCadastro.innerText = 'Cadastro realizado com sucesso!';
+
+      document.getElementById('empresa').value = '';
+      document.getElementById('email').value = '';
+      document.getElementById('senhaCadastro').value = '';
+    }
+
     function simularLogin() {
       const usuario = document.getElementById('usuario').value;
       const senha = document.getElementById('senha').value;
       const mensagem = document.getElementById('mensagem-login');
 
-      if (usuario === 'fornecedor' && senha === '1234') {
+      const usuarios = obterUsuarios();
+      const usuarioValido = usuarios.find(u => u.email === usuario && u.senha === senha);
+
+      if (usuarioValido) {
         mensagem.style.color = 'green';
         mensagem.innerText = 'Login bem-sucedido!';
       } else {

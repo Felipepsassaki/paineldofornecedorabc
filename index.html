@@ -61,6 +61,9 @@
       font-size: 0.9rem;
       white-space: pre-wrap;
     }
+    #upload {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -90,6 +93,15 @@
       <input type="password" id="senhaCadastro" placeholder="Senha">
       <button onclick="simularCadastro()">Cadastrar</button>
       <div id="mensagem-cadastro"></div>
+    </section>
+
+    <section id="upload" class="card">
+      <h2>Área do Fornecedor</h2>
+      <p>Bem-vindo! Envie seus documentos abaixo:</p>
+      <input type="file" id="arquivo">
+      <button onclick="enviarDocumento()">Enviar Documento</button>
+      <div id="mensagem-upload"></div>
+      <div id="lista-documentos"></div>
     </section>
 
     <section id="admin" class="card">
@@ -129,7 +141,7 @@
         return;
       }
 
-      usuarios.push({ email, senha });
+      usuarios.push({ email, senha, documentos: [] });
       salvarUsuarios(usuarios);
 
       mensagemCadastro.style.color = 'green';
@@ -142,6 +154,8 @@
       atualizarDebug();
     }
 
+    let usuarioLogado = null;
+
     function simularLogin() {
       const usuario = document.getElementById('usuario').value;
       const senha = document.getElementById('senha').value;
@@ -153,9 +167,46 @@
       if (usuarioValido) {
         mensagem.style.color = 'green';
         mensagem.innerText = 'Login bem-sucedido!';
+        usuarioLogado = usuarioValido.email;
+        document.getElementById('upload').style.display = 'block';
+        atualizarListaDocumentos();
       } else {
         mensagem.style.color = 'red';
         mensagem.innerText = 'Usuário ou senha incorretos';
+      }
+    }
+
+    function enviarDocumento() {
+      const arquivoInput = document.getElementById('arquivo');
+      const mensagem = document.getElementById('mensagem-upload');
+      const arquivo = arquivoInput.files[0];
+
+      if (!arquivo) {
+        mensagem.style.color = 'red';
+        mensagem.innerText = 'Selecione um arquivo antes de enviar.';
+        return;
+      }
+
+      const usuarios = obterUsuarios();
+      const index = usuarios.findIndex(u => u.email === usuarioLogado);
+      if (index !== -1) {
+        usuarios[index].documentos.push(arquivo.name);
+        salvarUsuarios(usuarios);
+        mensagem.style.color = 'green';
+        mensagem.innerText = 'Documento enviado com sucesso!';
+        atualizarListaDocumentos();
+        arquivoInput.value = '';
+      }
+    }
+
+    function atualizarListaDocumentos() {
+      const lista = document.getElementById('lista-documentos');
+      const usuarios = obterUsuarios();
+      const usuario = usuarios.find(u => u.email === usuarioLogado);
+      if (usuario && usuario.documentos.length > 0) {
+        lista.innerHTML = '<h4>Documentos enviados:</h4><ul>' + usuario.documentos.map(doc => `<li>${doc}</li>`).join('') + '</ul>';
+      } else {
+        lista.innerHTML = '';
       }
     }
 

@@ -61,7 +61,7 @@
       font-size: 0.9rem;
       white-space: pre-wrap;
     }
-    #upload {
+    #upload, #login, #cadastro, #admin {
       display: none;
     }
   </style>
@@ -72,9 +72,9 @@
   </header>
 
   <nav>
-    <a href="#login">Login</a>
-    <a href="#cadastro">Cadastro</a>
-    <a href="#admin">Admin</a>
+    <a href="#" onclick="mostrarSecao('login')">Login</a>
+    <a href="#" onclick="mostrarSecao('cadastro')">Cadastro</a>
+    <a href="#" onclick="mostrarSecao('admin')">Admin</a>
   </nav>
 
   <main>
@@ -112,6 +112,14 @@
   </main>
 
   <script>
+    function mostrarSecao(id) {
+      document.getElementById('login').style.display = 'none';
+      document.getElementById('cadastro').style.display = 'none';
+      document.getElementById('upload').style.display = 'none';
+      document.getElementById('admin').style.display = 'none';
+      document.getElementById(id).style.display = 'block';
+    }
+
     function obterUsuarios() {
       return JSON.parse(localStorage.getItem('usuarios') || '[]');
     }
@@ -168,7 +176,7 @@
         mensagem.style.color = 'green';
         mensagem.innerText = 'Login bem-sucedido!';
         usuarioLogado = usuarioValido.email;
-        document.getElementById('upload').style.display = 'block';
+        mostrarSecao('upload');
         atualizarListaDocumentos();
       } else {
         mensagem.style.color = 'red';
@@ -216,7 +224,10 @@
       debug.innerText = 'Usuários cadastrados (localStorage):\n' + JSON.stringify(usuarios, null, 2);
     }
 
-    window.onload = atualizarDebug;
+    window.onload = () => {
+      atualizarDebug();
+      mostrarSecao('login');
+    };
   </script>
 </body>
 </html>
